@@ -7,6 +7,14 @@ const envSchema = z.object({
   DATABASE_URL: z.url("Database URL must be a valid URL"),
   BETTER_AUTH_SECRET: z.string().min(1, "Better Auth secret must be provided"),
   BETTER_AUTH_URL: z.url("Better Auth URL must be a valid URL"),
+  GITHUB_CLIENT_ID: z.string().min(1, "GitHub Client ID must be provided"),
+  GITHUB_CLIENT_SECRET: z
+    .string()
+    .min(1, "GitHub Client Secret must be provided"),
+  GOOGLE_CLIENT_ID: z.string().min(1, "Google Client ID must be provided"),
+  GOOGLE_CLIENT_SECRET: z
+    .string()
+    .min(1, "Google Client Secret must be provided"),
 })
 
 const checkEnv = (env: Record<string, string | undefined>) => {
