@@ -39,11 +39,17 @@ function ThemeHotkey() {
 
   React.useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
-      if (event.defaultPrevented || event.repeat) {
+      if (
+        event.defaultPrevented ||
+        event.repeat ||
+        event.metaKey ||
+        event.ctrlKey ||
+        event.altKey
+      ) {
         return
       }
 
-      if (event.metaKey || event.ctrlKey || event.altKey) {
+      if (!event.key) {
         return
       }
 

@@ -1,6 +1,5 @@
 import { config } from "dotenv"
 import { defineConfig } from "drizzle-kit"
-import { ENV } from "./lib/env"
 
 config({ path: ".env" })
 
@@ -9,6 +8,6 @@ export default defineConfig({
   out: "./drizzle",
   dialect: "postgresql",
   dbCredentials: {
-    url: ENV.DATABASE_URL,
+    url: process.env.DATABASE_URL!,
   },
 })
