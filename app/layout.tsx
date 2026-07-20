@@ -1,16 +1,12 @@
-import { Geist, Geist_Mono, Inter, Public_Sans } from "next/font/google"
+import { Outfit } from "next/font/google"
 
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
-import { cn } from "@/lib/utils";
+import { cn } from "@/lib/utils"
 
-const publicSansHeading = Public_Sans({subsets:['latin'],variable:'--font-heading'});
-
-const inter = Inter({subsets:['latin'],variable:'--font-sans'})
-
-const fontMono = Geist_Mono({
+const fontSans = Outfit({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-sans",
 })
 
 export default function RootLayout({
@@ -22,7 +18,7 @@ export default function RootLayout({
     <html
       lang="en"
       suppressHydrationWarning
-      className={cn("antialiased", fontMono.variable, "font-sans", inter.variable, publicSansHeading.variable)}
+      className={cn("antialiased", fontSans.variable, "font-sans")}
     >
       <body>
         <ThemeProvider>{children}</ThemeProvider>
