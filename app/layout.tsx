@@ -4,6 +4,7 @@ import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { TRPCReactProvider } from "@/trpc/client"
 import { cn } from "@/lib/utils"
 
 const fontSans = Outfit({
@@ -23,12 +24,14 @@ export default function RootLayout({
       className={cn("antialiased", fontSans.variable, "font-sans")}
     >
       <body>
-        <ThemeProvider>
-          <TooltipProvider>
-            {children}
-            <Toaster richColors position="bottom-right" />
-          </TooltipProvider>
-        </ThemeProvider>
+        <TRPCReactProvider>
+          <ThemeProvider>
+            <TooltipProvider>
+              {children}
+              <Toaster richColors position="bottom-right" />
+            </TooltipProvider>
+          </ThemeProvider>
+        </TRPCReactProvider>
       </body>
     </html>
   )
