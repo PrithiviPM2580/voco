@@ -83,7 +83,7 @@ export default function SignIn() {
   return (
     <Card className="w-full max-w-md rounded-2xl border-0 shadow-xl">
       <div className="flex justify-center pt-8">
-        <Logo color="#000" />
+        <Logo color="#000" className="h-14 w-14" />
       </div>
 
       <CardHeader className="space-y-2 text-center">
