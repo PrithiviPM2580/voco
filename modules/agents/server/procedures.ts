@@ -1,18 +1,43 @@
-import { createTRPCRouter, baseProcedure } from "@/trpc/init"
+import { createTRPCRouter, protectedProcedure } from "@/trpc/init"
 import { db } from "@/db"
 import { agents } from "@/db/schema"
 import { TRPCError } from "@trpc/server"
+import { agentsInsertSchema, agentsParamsSchema } from "../schema"
+import { eq } from "drizzle-orm"
 
 export const agentsRouter = createTRPCRouter({
-  getMany: baseProcedure.query(async () => {
-    const data = await db.select().from(agents)
+  getOne: protectedProcedure
+    .input(agentsParamsSchema)
+    .query(async ({ input }) => {
+      const [existingAgent] = await db
+        .select()
+        .from(agents)
+        .where(eq(agents.id, input.id))
 
-    // await new Promise((resolve) => setTimeout(resolve, 5000))
-    // throw new TRPCError({
-    //   code: "INTERNAL_SERVER_ERROR",
-    //   message: "This is a test error",
-    // })
+      if (!existingAgent) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Agent not found",
+        })
+      }
+      return existingAgent
+    }),
+  getMany: protectedProcedure.query(async () => {
+    const data = await db.select().from(agents)
 
     return data
   }),
+  create: protectedProcedure
+    .input(agentsInsertSchema)
+    .mutation(async ({ input, ctx }) => {
+      const [createdAgent] = await db
+        .insert(agents)
+        .values({
+          ...input,
+          userId: ctx.auth.user.id,
+        })
+        .returning()
+
+      return createdAgent
+    }),
 })
