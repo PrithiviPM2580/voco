@@ -2,8 +2,12 @@ import { createTRPCRouter, protectedProcedure } from "@/trpc/init"
 import { db } from "@/db"
 import { agents } from "@/db/schema"
 import { TRPCError } from "@trpc/server"
-import { agentsInsertSchema, agentsParamsSchema } from "../schema"
-import { eq, getColumns } from "drizzle-orm"
+import {
+  agentsFiltersSchema,
+  agentsInsertSchema,
+  agentsParamsSchema,
+} from "../schema"
+import { and, desc, eq, getColumns, ilike, sql, count } from "drizzle-orm"
 
 export const agentsRouter = createTRPCRouter({
   getOne: protectedProcedure
@@ -12,6 +16,7 @@ export const agentsRouter = createTRPCRouter({
       const [existingAgent] = await db
         .select({
           ...getColumns(agents),
+          meetingCount: sql<number>`6`,
         })
         .from(agents)
         .where(eq(agents.id, input.id))
@@ -24,11 +29,45 @@ export const agentsRouter = createTRPCRouter({
       }
       return existingAgent
     }),
-  getMany: protectedProcedure.query(async () => {
-    const data = await db.select().from(agents)
+  getMany: protectedProcedure
+    .input(agentsFiltersSchema)
+    .query(async ({ ctx, input }) => {
+      const { page, pageSize, search } = input
 
-    return data
-  }),
+      const data = await db
+        .select({
+          ...getColumns(agents),
+          meetingCount: sql<number>`6`,
+        })
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.auth.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined
+          )
+        )
+        .orderBy(desc(agents.createdAt), desc(agents.id))
+        .limit(pageSize)
+        .offset((page - 1) * pageSize)
+
+      const [total] = await db
+        .select({ count: count() })
+        .from(agents)
+        .where(
+          and(
+            eq(agents.userId, ctx.auth.user.id),
+            search ? ilike(agents.name, `%${search}%`) : undefined
+          )
+        )
+
+      const totalPages = Math.ceil(total.count / pageSize)
+
+      return {
+        items: data,
+        total: total.count,
+        totalPages,
+      }
+    }),
   create: protectedProcedure
     .input(agentsInsertSchema)
     .mutation(async ({ input, ctx }) => {
