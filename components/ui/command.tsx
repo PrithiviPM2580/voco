@@ -12,10 +12,26 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog"
 import {
-  InputGroup,
-  InputGroupAddon,
-} from "@/components/ui/input-group"
+  Drawer,
+  DrawerContent,
+  DrawerHeader,
+  DrawerDescription,
+  DrawerTitle,
+} from "@/components/ui/drawer"
+import { InputGroup, InputGroupAddon } from "@/components/ui/input-group"
 import { SearchIcon, CheckIcon } from "lucide-react"
+import { useIsMobile } from "@/hooks/use-mobile"
+
+type CommandResponsiveDialogProps = {
+  open?: boolean
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  children: React.ReactNode
+  title?: string
+  description?: string
+  className?: string
+  showCloseButton?: boolean
+}
 
 function Command({
   className,
@@ -61,6 +77,59 @@ function CommandDialog({
         showCloseButton={showCloseButton}
       >
         {children}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
+function CommandResponsiveDialog({
+  open,
+  defaultOpen,
+  onOpenChange,
+  title = "Command Palette",
+  description = "Search for a command to run...",
+  children,
+  className,
+  showCloseButton = false,
+}: CommandResponsiveDialogProps) {
+  const isMobile = useIsMobile()
+
+  const content = (
+    <>
+      <DialogHeader className="sr-only">
+        <DialogTitle>{title}</DialogTitle>
+        <DialogDescription>{description}</DialogDescription>
+      </DialogHeader>
+
+      {children}
+    </>
+  )
+
+  if (isMobile) {
+    return (
+      <Drawer open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+        <DrawerContent>
+          <DrawerHeader className="sr-only">
+            <DrawerTitle>{title}</DrawerTitle>
+            <DrawerDescription>{description}</DrawerDescription>
+          </DrawerHeader>
+
+          {children}
+        </DrawerContent>
+      </Drawer>
+    )
+  }
+
+  return (
+    <Dialog open={open} defaultOpen={defaultOpen} onOpenChange={onOpenChange}>
+      <DialogContent
+        className={cn(
+          "top-1/3 translate-y-0 overflow-hidden rounded-xl! p-0",
+          className
+        )}
+        showCloseButton={showCloseButton}
+      >
+        {content}
       </DialogContent>
     </Dialog>
   )
@@ -193,4 +262,5 @@ export {
   CommandItem,
   CommandShortcut,
   CommandSeparator,
+  CommandResponsiveDialog,
 }
