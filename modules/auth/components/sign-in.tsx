@@ -19,8 +19,13 @@ import Logo from "@/components/logo"
 import Google from "@/components/google"
 import Github from "@/components/github"
 import Link from "next/link"
+import { useState } from "react"
+import { authClient } from "@/lib/auth-client"
+import { useRouter } from "next/navigation"
+import { toast } from "sonner"
 
 export default function SignIn() {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const form = useForm<SignInInput>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -28,8 +33,53 @@ export default function SignIn() {
       password: "",
     },
   })
+  const router = useRouter()
 
-  function onSubmit(data: SignInInput) {}
+  async function onSubmit(data: SignInInput) {
+    setIsLoading(true)
+
+    await authClient.signIn.email(
+      {
+        email: data.email,
+        password: data.password,
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => {
+          setIsLoading(false)
+          router.push("/")
+          toast.success("Account created successfully.")
+        },
+        onError: ({ error }) => {
+          setIsLoading(false)
+          toast.error(error.message)
+        },
+      }
+    )
+  }
+
+  async function onSocial(provider: "google" | "github") {
+    setIsLoading(true)
+
+    await authClient.signIn.social(
+      {
+        provider: provider,
+        callbackURL: "/",
+      },
+      {
+        onSuccess: () => {
+          setIsLoading(false)
+          toast.success(
+            `${provider.toUpperCase()} Account created successfully.`
+          )
+        },
+        onError: ({ error }) => {
+          setIsLoading(false)
+          toast.error(error.message)
+        },
+      }
+    )
+  }
   return (
     <Card className="w-full max-w-md rounded-2xl border-0 shadow-xl">
       <div className="flex justify-center pt-8">
@@ -85,6 +135,7 @@ export default function SignIn() {
           type="submit"
           form="signin-form"
           className="h-11 w-full rounded-lg"
+          disabled={isLoading}
         >
           Sign In
         </Button>
@@ -102,16 +153,20 @@ export default function SignIn() {
         </div>
 
         <Button
+          onClick={() => onSocial("google")}
           variant="outline"
           className="flex h-11 w-full items-center gap-3"
+          disabled={isLoading}
         >
           <Google />
           Continue with Google
         </Button>
 
         <Button
+          onClick={() => onSocial("github")}
           variant="outline"
           className="flex h-11 w-full items-center gap-3"
+          disabled={isLoading}
         >
           <Github />
           Continue with GitHub
