@@ -17,6 +17,7 @@ const envSchema = z.object({
   GOOGLE_CLIENT_SECRET: z
     .string()
     .min(1, "Google Client Secret must be provided"),
+  NEXT_PUBLIC_APP_URL: z.url("NEXT_PUBLIC_APP_URL must be a valid URL"),
 })
 
 const checkEnv = (env: Record<string, string | undefined>) => {
