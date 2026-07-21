@@ -1,5 +1,5 @@
-import SignIn from "@/modules/auth/components/sign-in"
 import { auth } from "@/lib/auth"
+import SignIn from "@/modules/auth/components/sign-in"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
@@ -11,6 +11,5 @@ export default async function Page() {
   if (!!session) {
     redirect("/")
   }
-
   return <SignIn />
 }
