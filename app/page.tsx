@@ -1,7 +1,16 @@
-import { Button } from "@/components/ui/button"
-import { authClient } from "@/lib/auth-client"
+import { auth } from "@/lib/auth"
+import Home from "@/modules/home/components/Home"
+import { headers } from "next/headers"
+import { redirect } from "next/navigation"
 
-export default function Page() {
-  const session = authClient.getSession()
-  return <div></div>
+export default async function Page() {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  })
+
+  if (!session) {
+    redirect("/sign-in")
+  }
+
+  return <Home />
 }

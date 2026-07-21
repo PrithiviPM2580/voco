@@ -1,6 +1,5 @@
-import SignUp from "@/modules/auth/components/sign-up"
-
 import { auth } from "@/lib/auth"
+import SignUp from "@/modules/auth/components/sign-up"
 import { headers } from "next/headers"
 import { redirect } from "next/navigation"
 
