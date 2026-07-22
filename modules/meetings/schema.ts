@@ -23,5 +23,16 @@ export const meetingsFiltersSchema = z.object({
   search: z.string().nullish(),
 })
 
+export const meetingsInsertSchema = z.object({
+  name: z.string().min(1, "Meeting name is required"),
+  agentId: z.string().min(1, "Agent ID is required"),
+})
+
+export const meetingsUpdateSchema = meetingsInsertSchema.extend({
+  id: z.string().min(1, "Meeting ID is required"),
+})
+
 export type MeetingsParamsSchema = z.infer<typeof meetingsParamsSchema>
 export type MeetingsFiltersSchema = z.infer<typeof meetingsFiltersSchema>
+export type MeetingsInsertSchema = z.infer<typeof meetingsInsertSchema>
+export type MeetingsUpdateSchema = z.infer<typeof meetingsUpdateSchema>
