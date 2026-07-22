@@ -4,12 +4,12 @@ import { useSuspenseQuery } from "@tanstack/react-query"
 import { useTRPC } from "@/trpc/client"
 import LoadingState from "@/components/loading-state"
 import ErrorState from "@/components/error-state"
-import { DataTable } from "./data-table"
 import { columns } from "./columns"
 import EmptyState from "@/components/empty-state"
 import useAgentsFilters from "../hooks/use-agents-filters"
 import DataPagination from "./data-pagination"
 import { useRouter } from "next/navigation"
+import { DataTable } from "@/components/data-table"
 
 export default function Agent() {
   const router = useRouter()
