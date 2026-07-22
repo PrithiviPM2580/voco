@@ -1,0 +1,77 @@
+import { ReactNode, useState } from "react"
+import { ChevronsUpDownIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import {
+  Command,
+  CommandEmpty,
+  CommandInput,
+  CommandItem,
+  CommandList,
+  CommandResponsiveDialog,
+} from "@/components/ui/command"
+
+interface CommandSelectProps {
+  options: Array<{
+    id: string
+    value: string
+    children: ReactNode
+  }>
+  onSelect: (value: string) => void
+  onSearch?: (value: string) => void
+  value: string
+  placeholder?: string
+  isSearchable?: boolean
+  className?: string
+}
+
+export default function CommandSelect({
+  options,
+  onSelect,
+  onSearch,
+  value,
+  placeholder,
+  isSearchable,
+  className,
+}: CommandSelectProps) {
+  const [open, setOpen] = useState<boolean>(false)
+  const selectedOption = options.find((opt) => opt.value === value)
+  return (
+    <>
+      <Button
+        onClick={() => setOpen(true)}
+        type="button"
+        variant="outline"
+        className={cn(
+          "h-9 justify-between px-2 font-normal",
+          !selectedOption && "text-muted-foreground",
+          className
+        )}
+      >
+        <div className="">{selectedOption?.children ?? placeholder}</div>
+        <ChevronsUpDownIcon />
+      </Button>
+      <CommandResponsiveDialog open={open} onOpenChange={setOpen}>
+        <Command shouldFilter={false}>
+          <CommandInput placeholder="Search..." onValueChange={onSearch} />
+          <CommandList>
+            <CommandEmpty className="text-sm text-muted-foreground">
+              <span>No options found</span>
+            </CommandEmpty>
+            {options.map((option) => (
+              <CommandItem
+                key={option.id}
+                onSelect={() => {
+                  onSelect(option.value)
+                  setOpen(false)
+                }}
+              >
+                {option.children}
+              </CommandItem>
+            ))}
+          </CommandList>
+        </Command>
+      </CommandResponsiveDialog>
+    </>
+  )
+}
