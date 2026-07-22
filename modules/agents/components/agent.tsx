@@ -7,14 +7,26 @@ import ErrorState from "@/components/error-state"
 import { DataTable } from "./data-table"
 import { columns } from "./columns"
 import EmptyState from "@/components/empty-state"
+import useAgentsFilters from "../hooks/use-agents-filters"
+import DataPagination from "./data-pagination"
 
 export default function Agent() {
+  const [filters, setFilters] = useAgentsFilters()
   const trpc = useTRPC()
-  const { data } = useSuspenseQuery(trpc.agents.getMany.queryOptions({}))
+  const { data } = useSuspenseQuery(
+    trpc.agents.getMany.queryOptions({
+      ...filters,
+    })
+  )
 
   return (
     <div className="flex flex-1 flex-col gap-y-4 px-4 pb-4 md:px-8">
       <DataTable data={data.items} columns={columns} />
+      <DataPagination
+        page={filters.page}
+        totalPages={data.totalPages}
+        onPageChange={(page) => setFilters({ page })}
+      />
       {data.items.length === 0 && (
         <EmptyState
           title="Create your first agent"
