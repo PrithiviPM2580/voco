@@ -12,14 +12,16 @@ import { and, desc, eq, getColumns, ilike, sql, count } from "drizzle-orm"
 export const agentsRouter = createTRPCRouter({
   getOne: protectedProcedure
     .input(agentsParamsSchema)
-    .query(async ({ input }) => {
+    .query(async ({ input, ctx }) => {
       const [existingAgent] = await db
         .select({
           ...getColumns(agents),
           meetingCount: sql<number>`6`,
         })
         .from(agents)
-        .where(eq(agents.id, input.id))
+        .where(
+          and(eq(agents.id, input.id), eq(agents.userId, ctx.auth.user.id))
+        )
 
       if (!existingAgent) {
         throw new TRPCError({
