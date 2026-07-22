@@ -28,6 +28,10 @@ export const agentsFiltersSchema = z.object({
   search: z.string().nullish(),
 })
 
+export const agentsUpdateSchema = agentsInsertSchema.extend({
+  id: z.string("Agent ID must be a string").min(1, "Agent ID is required"),
+})
+
 export type AgentsParams = z.infer<typeof agentsParamsSchema>
 export type AgentsInsertInput = z.infer<typeof agentsInsertSchema>
 export type AgentsFilters = z.infer<typeof agentsFiltersSchema>
