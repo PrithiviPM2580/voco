@@ -5,6 +5,7 @@ import {
   DEFAULT_PAGE_SIZE,
 } from "@/lib/constants"
 import { z } from "zod"
+import { MeetingStatus } from "./types"
 
 export const meetingsParamsSchema = z.object({
   id: z.string().min(1, "Meeting ID is required"),
@@ -21,6 +22,16 @@ export const meetingsFiltersSchema = z.object({
     )
     .default(DEFAULT_PAGE_SIZE),
   search: z.string().nullish(),
+  agentId: z.string().nullish(),
+  status: z
+    .enum([
+      MeetingStatus.Upcoming,
+      MeetingStatus.Active,
+      MeetingStatus.Completed,
+      MeetingStatus.Processing,
+      MeetingStatus.Cancelled,
+    ])
+    .nullish(),
 })
 
 export const meetingsInsertSchema = z.object({
