@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { TRPCReactProvider } from "@/trpc/client"
+import { NuqsAdapter } from "nuqs/adapters/next"
 import { cn } from "@/lib/utils"
 
 const fontSans = Outfit({
@@ -24,14 +25,16 @@ export default function RootLayout({
       className={cn("antialiased", fontSans.variable, "font-sans")}
     >
       <body>
-        <TRPCReactProvider>
-          <ThemeProvider>
-            <TooltipProvider>
-              {children}
-              <Toaster richColors position="bottom-right" />
-            </TooltipProvider>
-          </ThemeProvider>
-        </TRPCReactProvider>
+        <NuqsAdapter>
+          <TRPCReactProvider>
+            <ThemeProvider>
+              <TooltipProvider>
+                {children}
+                <Toaster richColors position="bottom-right" />
+              </TooltipProvider>
+            </ThemeProvider>
+          </TRPCReactProvider>
+        </NuqsAdapter>
       </body>
     </html>
   )
