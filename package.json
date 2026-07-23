@@ -12,7 +12,8 @@
     "typecheck": "tsc --noEmit",
     "db:push": "drizzle-kit push",
     "db:studio": "drizzle-kit studio",
-    "ui:add": "bunx --bun shadcn@latest add"
+    "ui:add": "bunx --bun shadcn@latest add",
+    "dev:webhook": "ngrok http --url=parrot-judo-recent.ngrok-free.dev 3000"
   },
   "dependencies": {
     "@base-ui/react": "^1.6.0",
