@@ -23,6 +23,7 @@ export default function UpcomingState({
       />
       <div className="flex w-full flex-col-reverse items-center gap-2 lg:flex-row lg:justify-center">
         <Button
+          nativeButton={false}
           variant="secondary"
           className="w-full lg:w-auto"
           onClick={onCancelMeeting}
@@ -36,6 +37,7 @@ export default function UpcomingState({
         />
 
         <Button
+          nativeButton={false}
           variant="default"
           className="w-full lg:w-auto"
           disabled={isCancelling}
